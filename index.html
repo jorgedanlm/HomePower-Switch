@@ -20,15 +20,51 @@
       --shadow:0 10px 30px rgba(0,0,0,.22);
     }
     *{box-sizing:border-box}
+
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
       color:var(--text);
       background: var(--bg);
       line-height:1.45;
+      min-height:100vh;
     }
     a{color:inherit;text-decoration:none}
-    .wrap{max-width:1100px;margin:0 auto;padding:22px; position:relative; z-index:1;}
+
+    /* IMPORTANTE: capas del fondo por debajo del contenido */
+    .bgLayer{
+      position:fixed;
+      inset:0;
+      z-index:0;              /* <-- NO negativo, para evitar problemas en algunos browsers */
+      background-size:cover;
+      background-position:center;
+      background-repeat:no-repeat;
+      transform:scale(1.02);
+      opacity:0;
+      transition:opacity 1.2s ease;
+      pointer-events:none;
+    }
+    .bgLayer.on{ opacity:1; }
+
+    .bgOverlay{
+      position:fixed;
+      inset:0;
+      z-index:1;
+      pointer-events:none;
+      background:
+        radial-gradient(900px 600px at 20% 10%, rgba(99,179,255,.16), transparent 60%),
+        radial-gradient(800px 520px at 85% 15%, rgba(124,255,201,.12), transparent 55%),
+        linear-gradient(rgba(11,18,32,.82), rgba(11,18,32,.86));
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:22px;
+      position:relative;
+      z-index:2;              /* <-- por encima del fondo */
+    }
+
     .card{
       background:var(--card);
       border:1px solid var(--line);
@@ -37,6 +73,7 @@
       box-shadow:var(--shadow);
       backdrop-filter: blur(10px);
     }
+
     .nav{
       display:flex;align-items:center;justify-content:space-between;
       padding:10px 0;gap:14px;flex-wrap:wrap;
@@ -45,7 +82,8 @@
     .brandText{display:flex;flex-direction:column}
     .brandText b{font-size:18px;letter-spacing:.4px}
     .brandText span{font-size:12px;color:var(--muted)}
-    /* CAMBIO: logotipo más grande */
+
+    /* logotipo más grande */
     .logo{
       width:86px;height:86px;object-fit:contain;
       border-radius:18px;
@@ -53,6 +91,7 @@
       background:rgba(255,255,255,.06);
       padding:8px;
     }
+
     .navlinks{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
 
     .btn{
@@ -171,7 +210,6 @@
     }
     textarea{min-height:120px;resize:vertical}
 
-    /* Dropdown legible */
     select{
       background-color:rgba(10,16,30,.92);
       color:var(--text);
@@ -205,7 +243,6 @@
     .statusPill.ok{border-color:rgba(124,255,201,.45)}
     .statusPill.bad{border-color:rgba(255,107,107,.55)}
     .statusPill.warn{border-color:rgba(255,200,107,.55)}
-
     .divider{height:1px;background:var(--line);margin:12px 0}
 
     /* Biblioteca visible */
@@ -294,37 +331,13 @@
     .fieldMsg.bad{color:#ffb3b3}
     .fieldMsg.ok{color:#b9ffd9}
 
-    /* CAMBIO: ocultar indicadores en la primera página (no visibles) */
+    /* ocultar indicadores en la primera página */
     .statusRow{display:none !important;}
-
-    /* ===== Fondo con slideshow usando TODAS las fotos (b + c) ===== */
-    .bgLayer{
-      position:fixed;
-      inset:0;
-      z-index:-3;
-      background-size:cover;
-      background-position:center;
-      background-repeat:no-repeat;
-      transform:scale(1.02);
-      opacity:0;
-      transition:opacity 1.2s ease;
-    }
-    .bgLayer.on{ opacity:1; }
-
-    .bgOverlay{
-      position:fixed;
-      inset:0;
-      z-index:-2;
-      background:
-        radial-gradient(900px 600px at 20% 10%, rgba(99,179,255,.16), transparent 60%),
-        radial-gradient(800px 520px at 85% 15%, rgba(124,255,201,.12), transparent 55%),
-        linear-gradient(rgba(11,18,32,.82), rgba(11,18,32,.86));
-    }
   </style>
 </head>
 
 <body>
-  <!-- FONDO SLIDESHOW (usa todas las fotos) -->
+  <!-- Fondo slideshow -->
   <div class="bgLayer" id="bgA" aria-hidden="true"></div>
   <div class="bgLayer" id="bgB" aria-hidden="true"></div>
   <div class="bgOverlay" aria-hidden="true"></div>
@@ -333,7 +346,6 @@
     <!-- NAV -->
     <div class="nav">
       <div class="brand">
-        <!-- Coloca logotipo.png en la misma carpeta que este index.html -->
         <img class="logo" src="logotipo.png" alt="HomePower Switch Logo" />
         <div class="brandText">
           <b>HomePower Switch</b>
@@ -355,7 +367,6 @@
     <!-- HERO -->
     <div id="inicio" class="hero">
       <div class="heroGrid">
-        <!-- Historia + CTA -->
         <div class="card">
           <h1>Paneles eléctricos y Transfer Switch Automáticos (ATS) a pedido · Florida</h1>
           <p><b>HomePower Switch: energía bajo control en tu hogar.</b></p>
@@ -386,13 +397,11 @@
             Si tienes dudas sobre tu caso específico, lo aclaramos directamente en tu proyecto y te brindaremos asesoría técnica antes de construir.
           </p>
 
-          <!-- CAMBIO: los indicadores no deben verse (statusRow oculto por CSS) -->
           <div class="statusRow">
             <span id="dbStatus" class="statusPill">Base de precios: cargando…</span>
             <span id="sendStatus" class="statusPill warn">Envío: bloqueado (faltan datos)</span>
           </div>
 
-          <!-- CAMBIO: Botones de contacto SOLO comunicación (sin texto extra generado) -->
           <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
             <button class="btn primary" id="btnPedir">Pedir mi sistema</button>
             <a class="btn" href="tel:+17865998225" aria-label="Llamar a (786) 599-8225">📞 (786) 599-8225</a>
@@ -406,7 +415,6 @@
           </p>
         </div>
 
-        <!-- Nota 220V -->
         <div class="card">
           <h2>Aclaración importante: Proyectos 220 V</h2>
           <p class="info">
@@ -464,7 +472,7 @@
       </div>
     </div>
 
-    <!-- CAMBIO: mover "Contacto directo" y "Qué incluir..." ANTES de "Solicitar proyecto" -->
+    <!-- CONTACTO ANTES DEL PROYECTO -->
     <div id="contacto" class="section">
       <div class="card">
         <h2>Contacto directo</h2>
@@ -511,7 +519,6 @@
             <label>Nivel de protección de voltaje (obligatorio)</label>
             <select id="goal">
               <option value="">— Seleccionar —</option>
-              <!-- CAMBIO: eliminado el sub-menú inicial -->
               <option value="Protección de voltaje parcial (solo toma de servicio para carga del EcoFlow o generador)">
                 Protección de voltaje parcial (solo toma de servicio para carga del EcoFlow o generador)
               </option>
@@ -646,7 +653,6 @@
             </div>
           </div>
 
-          <!-- Toma de servicio (incluida) -->
           <div class="optCard">
             <div class="optLabel">
               <div class="optLabelLeft"><span class="dash">-</span> Toma de servicio para carga (NEMA 5-20R) (incluida)</div>
@@ -751,80 +757,85 @@
     const EMAIL = "jorgedanlm@gmail.com";
 
     // =============================
-    // FONDO SLIDESHOW (usa TODAS las fotos)
+    // FONDO SLIDESHOW (8 fotos)
     // =============================
-    // Coloca tus imágenes aquí:
-    // /images/background/fondo-1.png
-    // /images/background/fondo-2.jpg
-    // ...
+    // IMPORTANTE: aquí se usa fondo-6.jpg (no .jpeg) porque tu archivo es .jpg
     const BG_IMAGES = [
-  "images/background/fondo-1.png",
-  "images/background/fondo-2.jpg",
-  "images/background/fondo-3.jpg",
-  "images/background/fondo-4.jpg",
-  "images/background/fondo-5.webp",
-  "images/background/fondo-6.jpeg",
-  "images/background/fondo-7.jpg",
-  "images/background/fondo-8.jpg"
-];
+      "images/background/fondo-1.png",
+      "images/background/fondo-2.jpg",
+      "images/background/fondo-3.jpg",
+      "images/background/fondo-4.jpg",
+      "images/background/fondo-5.webp",
+      "images/background/fondo-6.jpg",
+      "images/background/fondo-7.jpg",
+      "images/background/fondo-8.jpg"
+    ];
 
-function preloadImage(src){
-  return new Promise((resolve, reject) => {
-    const im = new Image();
-    im.onload = () => resolve(src);
-    im.onerror = () => reject(src);
-    im.src = src;
-  });
-}
-
-async function startBackgroundSlideshow(){
-  const a = document.getElementById("bgA");
-  const b = document.getElementById("bgB");
-  if (!a || !b || !BG_IMAGES.length) return;
-
-  // Preload con diagnóstico
-  const ok = [];
-  const bad = [];
-  for (const src of BG_IMAGES){
-    try{
-      await preloadImage(src);
-      ok.push(src);
-    }catch(e){
-      bad.push(src);
+    function assetUrl(relPath){
+      // Resuelve bien en:
+      // - Local (file:// o http://localhost)
+      // - GitHub Pages en subcarpeta (…/HomePower-Switch/)
+      return new URL(relPath, document.baseURI).toString();
     }
-  }
 
-  console.log("BG OK:", ok);
-  console.warn("BG FAIL:", bad);
+    function preloadImage(resolvedUrl){
+      return new Promise((resolve, reject) => {
+        const im = new Image();
+        im.onload = () => resolve(resolvedUrl);
+        im.onerror = () => reject(resolvedUrl);
+        im.src = resolvedUrl;
+      });
+    }
 
-  // Si ninguna carga, salimos
-  if (!ok.length){
-    console.error("No cargó ninguna imagen de fondo. Revisa rutas/nombres.");
-    return;
-  }
+    async function startBackgroundSlideshow(){
+      const a = document.getElementById("bgA");
+      const b = document.getElementById("bgB");
+      if (!a || !b || !BG_IMAGES.length) return;
 
-  let idx = 0;
-  let showA = true;
+      const candidates = BG_IMAGES.map(assetUrl);
 
-  a.style.backgroundImage = `url("${ok[idx]}")`;
-  a.classList.add("on");
+      // Preload con diagnóstico (mira F12 > Console)
+      const ok = [];
+      const bad = [];
+      for (const src of candidates){
+        try{
+          await preloadImage(src);
+          ok.push(src);
+        }catch(e){
+          bad.push(src);
+        }
+      }
 
-  setInterval(() => {
-    idx = (idx + 1) % ok.length;
-    const next = ok[idx];
+      console.log("BG OK:", ok);
+      console.warn("BG FAIL:", bad);
 
-    if (showA){
-      b.style.backgroundImage = `url("${next}")`;
-      b.classList.add("on");
-      a.classList.remove("on");
-    } else {
-      a.style.backgroundImage = `url("${next}")`;
+      if (!ok.length){
+        console.error("No cargó ninguna imagen de fondo. Revisa nombres/rutas (case sensitive) y que estén en el repo.");
+        return;
+      }
+
+      let idx = 0;
+      let showA = true;
+
+      a.style.backgroundImage = `url("${ok[idx]}")`;
       a.classList.add("on");
-      b.classList.remove("on");
+
+      setInterval(() => {
+        idx = (idx + 1) % ok.length;
+        const next = ok[idx];
+
+        if (showA){
+          b.style.backgroundImage = `url("${next}")`;
+          b.classList.add("on");
+          a.classList.remove("on");
+        } else {
+          a.style.backgroundImage = `url("${next}")`;
+          a.classList.add("on");
+          b.classList.remove("on");
+        }
+        showA = !showA;
+      }, 9000);
     }
-    showA = !showA;
-  }, 9000);
-}
 
     // =============================
     // HELPERS
@@ -869,7 +880,6 @@ async function startBackgroundSlideshow(){
 
     function matchesCondition(rowCond, ctx) {
       if (!rowCond || rowCond.toLowerCase() === "siempre") return true;
-
       const parts = rowCond.split(/\s+AND\s+/i).map(s => s.trim());
       return parts.every(expr => {
         const [k, v] = expr.split("=").map(x => (x || "").trim());
@@ -932,10 +942,8 @@ async function startBackgroundSlideshow(){
         chip.addEventListener("click", ()=>{
           const group = chip.getAttribute("data-group");
           const value = chip.getAttribute("data-value");
-
           state[group] = (state[group] === value) ? "" : value;
           ensureOneSelected(group);
-
           refreshAll();
         });
       });
@@ -955,7 +963,6 @@ async function startBackgroundSlideshow(){
 
     function isCompleteSelection(){
       if (!DB_READY) return false;
-
       const required = [
         state.volt,
         state.nema,
@@ -1101,12 +1108,9 @@ async function startBackgroundSlideshow(){
         ``,
         `Nota 220V: Si tu vivienda usa dos fases de 110V (cada una con neutro), un generador 110V respaldará solo una fase. Equipos 220V deben quedar fuera del respaldo.`
       ];
-
       return lines.join("\n");
     }
 
-    // CAMBIO: los botones de contacto del HERO no deben “cargar texto”.
-    // Por eso NO tocamos btnWhatsAppTop aquí.
     function setLinks(finalText){
       const wa = "https://wa.me/" + PHONE_E164 + "?text=" + encodeURIComponent(finalText);
       const mail = "mailto:" + EMAIL
@@ -1187,7 +1191,7 @@ async function startBackgroundSlideshow(){
     }
 
     // =============================
-    // 5) BIBLIOTECA VISIBLE (library.json)
+    // 5) BIBLIOTECA (library.json)
     // =============================
     const LIB_SPECS = [
       { key:"ats",        title:"ATS (Transfer Switch Automático)", slug:"ats", hint:"Cambio automático entre fuentes.", defaultImages:["ATS 1.jpg","ATS 2.jpg"] },
@@ -1198,7 +1202,6 @@ async function startBackgroundSlideshow(){
       { key:"protector",  title:"Protector de voltaje (alto/bajo)", slug:"protector", hint:"Bajo/alto voltaje + protección.", defaultImages:["protector de voltaje.avif","protector de voltaje 2.avif"] },
       { key:"monitor",    title:"Monitor de CA (6 en 1)",           slug:"monitor", hint:"Pantalla informativa.", defaultImages:["monitor.avif"] },
       { key:"nema520r",   title:"Toma de servicio – NEMA 5-20R",     slug:"nema-5-20r", hint:"Servicio protegido para carga.", defaultImages:["conector nema 5-20R.jpg"] },
-
       { key:"voltaje",    title:"Voltaje del sistema",              slug:"voltaje", hint:"Referencia visual (si aplica).", defaultImages:[] },
       { key:"nema",       title:"Conectores NEMA (referencia)",      slug:"nema", hint:"Resumen visual de conectores.", defaultImages:[] },
     ];
@@ -1216,7 +1219,6 @@ async function startBackgroundSlideshow(){
       for (const spec of LIB_SPECS){
         const listFromJson = libJson && libJson[spec.slug];
         const images = Array.isArray(listFromJson) ? listFromJson : spec.defaultImages;
-
         out[spec.key] = {
           title: spec.title,
           slug: spec.slug,
@@ -1227,9 +1229,7 @@ async function startBackgroundSlideshow(){
       return out;
     }
 
-    function pickThumb(images){
-      return images && images.length ? images[0] : "";
-    }
+    function pickThumb(images){ return images && images.length ? images[0] : ""; }
 
     function renderLibraryGrid(){
       const grid = $("libGrid");
@@ -1276,9 +1276,7 @@ async function startBackgroundSlideshow(){
 
     function openGallery(key){
       const item = LIB[key];
-      if (!item || !item.images || !item.images.length){
-        return;
-      }
+      if (!item || !item.images || !item.images.length) return;
       galleryState.key = key;
       galleryState.idx = 0;
 
@@ -1366,7 +1364,7 @@ async function startBackgroundSlideshow(){
       // año
       $("year").textContent = new Date().getFullYear();
 
-      // WhatsApp TOP: SIEMPRE solo abrir chat (sin texto prellenado)
+      // WhatsApp TOP: siempre solo abrir chat (sin texto)
       $("btnWhatsAppTop").href = "https://wa.me/" + PHONE_E164;
 
       // cargar CSV precios
@@ -1391,13 +1389,12 @@ async function startBackgroundSlideshow(){
       LIB = buildLibraryFromSources(libJson);
       renderLibraryGrid();
 
-      // Botones "Ver fotos" en opciones
+      // Botones "Ver fotos"
       document.querySelectorAll("[data-lib-open]").forEach(btn=>{
         btn.addEventListener("click", (ev)=>{
           ev.preventDefault();
           ev.stopPropagation();
           const key = btn.getAttribute("data-lib-open");
-
           if (key === "voltaje") openGallery("voltaje");
           else if (key === "nema") {
             if (state.nema === "NEMA 5-15P") openGallery("nema515p");
@@ -1422,7 +1419,6 @@ async function startBackgroundSlideshow(){
         if (e.key === "ArrowLeft") prevImg();
       });
 
-      // primera validación
       validatePersonalBlock();
       refreshAll();
     }
