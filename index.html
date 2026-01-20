@@ -35,7 +35,7 @@
     .bgLayer{
       position:fixed;
       inset:0;
-      z-index:0;              /* <-- NO negativo, para evitar problemas en algunos browsers */
+      z-index:0;
       background-size:cover;
       background-position:center;
       background-repeat:no-repeat;
@@ -62,7 +62,7 @@
       margin:0 auto;
       padding:22px;
       position:relative;
-      z-index:2;              /* <-- por encima del fondo */
+      z-index:2;
     }
 
     .card{
@@ -195,9 +195,7 @@
     .linkTiny:hover{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.18)}
     .hintTiny{font-size:12px;color:var(--muted);margin-top:8px}
 
-    .contact{
-      display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;
-    }
+    .contact{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;}
     @media (max-width:900px){.contact{grid-template-columns:1fr}}
     label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
     input, select, textarea{
@@ -246,9 +244,7 @@
     .divider{height:1px;background:var(--line);margin:12px 0}
 
     /* Biblioteca visible */
-    .libGrid{
-      display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:10px;
-    }
+    .libGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:10px;}
     @media (max-width:1000px){.libGrid{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:520px){.libGrid{grid-template-columns:1fr}}
     .libCard{
@@ -260,10 +256,7 @@
       transition:transform .08s ease, background .2s ease, border-color .2s ease;
     }
     .libCard:hover{transform:translateY(-2px);background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18)}
-    .libThumb{
-      width:100%;height:140px;object-fit:cover;display:block;
-      background:rgba(255,255,255,.04);
-    }
+    .libThumb{width:100%;height:140px;object-fit:cover;display:block;background:rgba(255,255,255,.04);}
     .libBody{padding:12px}
     .libTitle{font-weight:850;margin:0 0 6px}
     .libMeta{font-size:12px;color:var(--muted);margin:0}
@@ -297,14 +290,9 @@
       background:rgba(255,255,255,.06);cursor:pointer;font-weight:750;font-size:13px;
     }
     .modalBtn:hover{background:rgba(255,255,255,.10)}
-    .modalMain{
-      display:grid;grid-template-columns:1.2fr .8fr;gap:0;
-    }
+    .modalMain{display:grid;grid-template-columns:1.2fr .8fr;gap:0;}
     @media (max-width:900px){.modalMain{grid-template-columns:1fr}}
-    .modalBig{
-      padding:12px;
-      border-right:1px solid rgba(255,255,255,.12);
-    }
+    .modalBig{padding:12px;border-right:1px solid rgba(255,255,255,.12);}
     @media (max-width:900px){.modalBig{border-right:0;border-bottom:1px solid rgba(255,255,255,.12)}}
     .modalBig img{
       width:100%;max-height:520px;object-fit:contain;
@@ -324,15 +312,38 @@
     .thumb.active{outline:2px solid rgba(124,255,201,.65);opacity:1}
 
     /* Validación */
-    .fieldMsg{
-      font-size:12px;margin-top:6px;
-      color:var(--muted);
-    }
+    .fieldMsg{font-size:12px;margin-top:6px;color:var(--muted);}
     .fieldMsg.bad{color:#ffb3b3}
     .fieldMsg.ok{color:#b9ffd9}
 
     /* ocultar indicadores en la primera página */
     .statusRow{display:none !important;}
+
+    /* Dirección: dropdown sugerencias (Google Maps Places / fallback) */
+    .addrWrap{position:relative;}
+    .addrDropdown{
+      position:absolute;left:0;right:0;top:calc(100% + 6px);
+      background:rgba(12,18,34,.98);
+      border:1px solid rgba(255,255,255,.16);
+      border-radius:12px;
+      box-shadow:0 18px 50px rgba(0,0,0,.45);
+      overflow:hidden;
+      display:none;
+      z-index:50;
+    }
+    .addrItem{
+      padding:10px 12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      cursor:pointer;
+      color:rgba(233,238,252,.92);
+      font-size:13px;
+    }
+    .addrItem:last-child{border-bottom:0}
+    .addrItem:hover{background:rgba(255,255,255,.06)}
+    .addrSub{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+
+    /* "Ver fotos" debajo de Equipo (solo aparece si hay match) */
+    .inlineTools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px}
   </style>
 </head>
 
@@ -487,7 +498,7 @@
           <li>Equipo (marca y modelo)</li>
           <li>Nivel de protección (parcial / total)</li>
           <li>Voltaje del sistema (110 V / 220 V)</li>
-          <li>Conector NEMA (5-15P o TT-30P)</li>
+          <li>Conector NEMA (5-15P / TT-30P)</li>
           <li>Protección bajo/alto y retardo (1 a 3 min)</li>
           <li>Longitudes: entrante (1–5), saliente (1–5), EcoFlow/generador (4–8), toma de servicio (1–8)</li>
           <li>Opcional: pantalla informativa</li>
@@ -515,6 +526,9 @@
             <label>Equipo / Generador (marca y modelo) (obligatorio)</label>
             <input id="equipment" placeholder="Ej.: EcoFlow Delta Pro / Honda EU2200i / (marca y modelo)" />
             <div id="msgEquip" class="fieldMsg"></div>
+            <div class="inlineTools">
+              <button type="button" id="btnEquipGallery" class="linkTiny" style="display:none">Ver fotos del equipo</button>
+            </div>
 
             <label>Nivel de protección de voltaje (obligatorio)</label>
             <select id="goal">
@@ -529,7 +543,10 @@
             <div id="msgGoal" class="fieldMsg"></div>
 
             <label>Dirección del pedido (entrega o ubicación del proyecto) (obligatorio)</label>
-            <input id="address" placeholder="Ej.: 1234 NW 56th St, Apt 3B (3er piso), Miami, FL, Estados Unidos, 33142" />
+            <div class="addrWrap">
+              <input id="address" placeholder="Ej.: 1234 NW 56th St, Apt 3B (3er piso), Miami, FL, Estados Unidos, 33142" autocomplete="off" />
+              <div id="addrDropdown" class="addrDropdown" role="listbox" aria-label="Sugerencias de dirección"></div>
+            </div>
             <div id="msgAddress" class="fieldMsg"></div>
 
             <label>Detalles adicionales (obligatorio)</label>
@@ -551,6 +568,10 @@
             </p>
             <p class="note">
               Recomendación: escribe la dirección con comas e incluye ZIP Code (5 dígitos).
+            </p>
+            <p class="note" style="margin-top:10px">
+              Dirección: esta página puede sugerir direcciones (Google Maps) mientras escribes, para reducir errores.
+              Si no se configura API, el campo funciona normal.
             </p>
           </div>
         </div>
@@ -756,10 +777,22 @@
     const PHONE_E164 = "17865998225";
     const EMAIL = "jorgedanlm@gmail.com";
 
+    // TAREA (a futuro): cuando se genere un nuevo código, preguntar dónde se va a subir.
+    // - Si es GitHub Pages / subcarpeta: mantener assetUrl() como está.
+    // - Si es dominio raíz o servidor propio: puede simplificarse.
+
+    // =============================
+    // GOOGLE MAPS (Places Autocomplete)
+    // =============================
+    // IMPORTANTE:
+    // - Para que las sugerencias aparezcan dentro del campo de dirección, necesitas una API KEY con Places habilitado.
+    // - Si la key está vacía, el campo funciona normal (sin sugerencias).
+    // - Cuando lo vayas a subir a otra web, probablemente debas restringir la key por dominio.
+    const GOOGLE_MAPS_API_KEY = ""; // <-- pon tu key aquí cuando decidas activarlo.
+
     // =============================
     // FONDO SLIDESHOW (8 fotos)
     // =============================
-    // IMPORTANTE: aquí se usa fondo-6.jpg (no .jpeg) porque tu archivo es .jpg
     const BG_IMAGES = [
       "images/background/fondo-1.png",
       "images/background/fondo-2.jpg",
@@ -772,9 +805,6 @@
     ];
 
     function assetUrl(relPath){
-      // Resuelve bien en:
-      // - Local (file:// o http://localhost)
-      // - GitHub Pages en subcarpeta (…/HomePower-Switch/)
       return new URL(relPath, document.baseURI).toString();
     }
 
@@ -794,7 +824,6 @@
 
       const candidates = BG_IMAGES.map(assetUrl);
 
-      // Preload con diagnóstico (mira F12 > Console)
       const ok = [];
       const bad = [];
       for (const src of candidates){
@@ -1123,6 +1152,7 @@
 
     function setDBStatus(ok, msg){
       const el = $("dbStatus");
+      if (!el) return;
       el.textContent = msg;
       el.classList.remove("ok","bad","warn");
       el.classList.add(ok ? "ok" : "bad");
@@ -1130,6 +1160,7 @@
 
     function setSendStatus(){
       const el = $("sendStatus");
+      if (!el) return;
       if (canSend()){
         el.textContent = "Envío: listo";
         el.classList.remove("warn","bad"); el.classList.add("ok");
@@ -1141,6 +1172,7 @@
 
     function setSelectionStatus(){
       const el = $("selectionStatus");
+      if (!el) return;
       if (!DB_READY){
         el.textContent = "Selección: esperando base de precios";
         return;
@@ -1183,6 +1215,9 @@
     function refreshAll(){
       ["volt","nema","lenIn","lenOut","lenGen","prot","delay","screen","lenService"].forEach(g => ensureOneSelected(g));
       refreshFinalBox();
+
+      // Enlace contextual de Equipo -> galería
+      updateEquipmentGalleryLink();
     }
 
     function goToProject(){
@@ -1193,57 +1228,126 @@
     // =============================
     // 5) BIBLIOTECA (library.json)
     // =============================
-    const LIB_SPECS = [
-      { key:"ats",        title:"ATS (Transfer Switch Automático)", slug:"ats", hint:"Cambio automático entre fuentes.", defaultImages:["ATS 1.jpg","ATS 2.jpg"] },
-      { key:"nema515p",   title:"NEMA 5-15P – Conector",            slug:"nema-5-15p", hint:"Conector estándar 15A/125V.", defaultImages:["conector nema 5 - 15P.jpg"] },
-      { key:"nematt30p",  title:"NEMA TT-30P – Conector",           slug:"nema-tt-30p", hint:"Conector RV 30A.", defaultImages:["conextor nema tt-30P.jpg"] },
-      { key:"breaker2p",  title:"Breaker dos polos",                slug:"breaker-2p", hint:"Protección interna / DIN.", defaultImages:["Breker 1.avif","breker 2.avif"] },
-      { key:"breaker3p",  title:"Breaker tres polos",               slug:"breaker-3p", hint:"Para configuración requerida.", defaultImages:["breker 3.avif","breker 2.avif"] },
-      { key:"protector",  title:"Protector de voltaje (alto/bajo)", slug:"protector", hint:"Bajo/alto voltaje + protección.", defaultImages:["protector de voltaje.avif","protector de voltaje 2.avif"] },
-      { key:"monitor",    title:"Monitor de CA (6 en 1)",           slug:"monitor", hint:"Pantalla informativa.", defaultImages:["monitor.avif"] },
-      { key:"nema520r",   title:"Toma de servicio – NEMA 5-20R",     slug:"nema-5-20r", hint:"Servicio protegido para carga.", defaultImages:["conector nema 5-20R.jpg"] },
-      { key:"voltaje",    title:"Voltaje del sistema",              slug:"voltaje", hint:"Referencia visual (si aplica).", defaultImages:[] },
-      { key:"nema",       title:"Conectores NEMA (referencia)",      slug:"nema", hint:"Resumen visual de conectores.", defaultImages:[] },
+    const TITLE_MAP = {
+      "ats": "ATS (Transfer Switch Automático)",
+      "ats-2p-110v": "ATS 2P – 110V",
+      "ats-4p-110v-220v": "ATS 4P – 110V / 220V",
+
+      "breaker-2p": "Breaker dos polos",
+      "breaker-3p": "Breaker tres polos",
+
+      "protector-voltaje": "Protector de voltaje (alto/bajo)",
+      "monitor-multifuncion": "Monitor de CA (multifunción)",
+
+      "nema-5-15p": "Conector NEMA 5-15P",
+      "nema-5-20r": "Toma NEMA 5-20R",
+      "nema-tt-30p": "Conector NEMA TT-30P",
+
+      "ecoflow-delta2": "EcoFlow Delta 2",
+      "ecoflow-delta2-max": "EcoFlow Delta 2 Max",
+      "ecoflow-delta2-pro": "EcoFlow Delta 2 Pro",
+      "ecoflow-delta3-ultra": "EcoFlow Delta 3 Ultra",
+    };
+
+    const HINT_MAP = {
+      "ats": "Cambio automático entre fuentes.",
+      "ats-2p-110v": "ATS para 110V (2 polos).",
+      "ats-4p-110v-220v": "ATS para 110V/220V (4 polos).",
+      "breaker-2p": "Protección interna / DIN.",
+      "breaker-3p": "Para configuración requerida.",
+      "protector-voltaje": "Bajo/alto voltaje + protección.",
+      "monitor-multifuncion": "Pantalla informativa / medición.",
+      "nema-5-15p": "Conector estándar 15A/125V.",
+      "nema-5-20r": "Servicio protegido para carga.",
+      "nema-tt-30p": "Conector RV 30A.",
+    };
+
+    const ORDER = [
+      "ats-2p-110v",
+      "ats-4p-110v-220v",
+      "breaker-2p",
+      "breaker-3p",
+      "protector-voltaje",
+      "monitor-multifuncion",
+      "nema-5-15p",
+      "nema-5-20r",
+      "nema-tt-30p",
+      "ecoflow-delta2",
+      "ecoflow-delta2-pro",
+      "ecoflow-delta2-max",
+      "ecoflow-delta3-ultra",
+      "ats"
     ];
 
-    let LIB = {};
+    let LIB = {}; // { slug: { title, slug, hint, images:[...] } }
 
     async function loadLibraryJson(){
-      const res = await fetch("library.json", { cache:"no-store" });
+      const res = await fetch("./library.json", { cache:"no-store" });
       if (!res.ok) throw new Error("No se encontró library.json");
-      return await res.json();
+      const data = await res.json();
+      if (!data || typeof data !== "object") throw new Error("library.json inválido");
+      return data;
     }
 
-    function buildLibraryFromSources(libJson){
+    function prettifySlug(slug){
+      return String(slug)
+        .replace(/[-_]+/g, " ")
+        .replace(/\b(\w)/g, (m)=> m.toUpperCase());
+    }
+
+    function normalizeImages(slug, files){
+      const list = Array.isArray(files) ? files : [];
+      return list.map(fn => `images/library/${slug}/${fn}`);
+    }
+
+    function buildLibrary(libJson){
       const out = {};
-      for (const spec of LIB_SPECS){
-        const listFromJson = libJson && libJson[spec.slug];
-        const images = Array.isArray(listFromJson) ? listFromJson : spec.defaultImages;
-        out[spec.key] = {
-          title: spec.title,
-          slug: spec.slug,
-          hint: spec.hint,
-          images: images.map(fn => `images/library/${spec.slug}/${fn}`)
-        };
+      if (libJson && typeof libJson === "object"){
+        for (const [slug, files] of Object.entries(libJson)){
+          if (!Array.isArray(files)) continue;
+          const title = TITLE_MAP[slug] || prettifySlug(slug);
+          const hint  = HINT_MAP[slug]  || "";
+          out[slug] = { title, slug, hint, images: normalizeImages(slug, files) };
+        }
+        return out;
       }
       return out;
     }
 
+    // Compatibilidad si existe una llamada antigua
+    function buildLibraryFromSources(libJson){
+      return buildLibrary(libJson);
+    }
+
     function pickThumb(images){ return images && images.length ? images[0] : ""; }
+
+    function getSortedSlugs(){
+      const slugs = Object.keys(LIB);
+      const orderIndex = new Map(ORDER.map((s,i)=>[s,i]));
+      slugs.sort((a,b)=>{
+        const ia = orderIndex.has(a) ? orderIndex.get(a) : 10_000;
+        const ib = orderIndex.has(b) ? orderIndex.get(b) : 10_000;
+        if (ia != ib) return ia - ib;
+        return a.localeCompare(b, "es", { sensitivity:"base" });
+      });
+      return slugs;
+    }
 
     function renderLibraryGrid(){
       const grid = $("libGrid");
       grid.innerHTML = "";
 
-      const shownKeys = ["ats","nema515p","nematt30p","breaker2p","breaker3p","protector","monitor","nema520r"];
-      for (const key of shownKeys){
-        const item = LIB[key];
+      const slugs = getSortedSlugs();
+      for (const slug of slugs){
+        const item = LIB[slug];
+        if (!item) continue;
+
         const thumb = pickThumb(item.images);
         const count = item.images.length;
 
         const card = document.createElement("div");
         card.className = "libCard";
-        card.setAttribute("data-open-lib", key);
+        card.setAttribute("data-open-lib", slug);
 
         const img = document.createElement("img");
         img.className = "libThumb";
@@ -1256,31 +1360,50 @@
 
         const body = document.createElement("div");
         body.className = "libBody";
+        const hint = item.hint ? item.hint : "Referencia visual";
         body.innerHTML = `
           <div class="libTitle">${item.title}</div>
-          <p class="libMeta">${item.hint} · ${count} imagen${count===1?"":"es"}</p>
+          <p class="libMeta">${hint} · ${count} imagen${count===1?"":"es"}</p>
         `;
 
         card.appendChild(img);
         card.appendChild(body);
         grid.appendChild(card);
 
-        card.addEventListener("click", ()=> openGallery(key));
+        card.addEventListener("click", ()=> openGallery(slug));
       }
     }
 
     // =============================
     // 6) MODAL GALERÍA
     // =============================
-    let galleryState = { key:"", idx:0 };
+    let galleryState = { key:"", idx:0, images:null, title:"" };
 
     function openGallery(key){
       const item = LIB[key];
       if (!item || !item.images || !item.images.length) return;
       galleryState.key = key;
       galleryState.idx = 0;
+      galleryState.images = item.images;
+      galleryState.title = item.title;
 
       $("modalTitle").textContent = item.title;
+      renderGallery();
+      $("modalBack").style.display = "flex";
+      $("modalBack").setAttribute("aria-hidden","false");
+      document.body.style.overflow = "hidden";
+    }
+
+    // Abre un modal con imágenes combinadas (ej: NEMA 5-15P + TT-30P)
+    function openGalleryCombined(title, images){
+      const list = Array.isArray(images) ? images.filter(Boolean) : [];
+      if (!list.length) return;
+      galleryState.key = "_combined_";
+      galleryState.idx = 0;
+      galleryState.images = list;
+      galleryState.title = title || "Galería";
+
+      $("modalTitle").textContent = galleryState.title;
       renderGallery();
       $("modalBack").style.display = "flex";
       $("modalBack").setAttribute("aria-hidden","false");
@@ -1294,8 +1417,9 @@
     }
 
     function renderGallery(){
-      const item = LIB[galleryState.key];
-      const imgs = item.images;
+      const imgs = galleryState.images || [];
+      if (!imgs.length) return;
+
       const idx = Math.max(0, Math.min(galleryState.idx, imgs.length-1));
       galleryState.idx = idx;
 
@@ -1307,23 +1431,174 @@
         const t = document.createElement("img");
         t.className = "thumb" + (i===idx ? " active" : "");
         t.src = src;
-        t.alt = item.title + " " + (i+1);
+        t.alt = (galleryState.title || "Imagen") + " " + (i+1);
         t.addEventListener("click", ()=>{ galleryState.idx = i; renderGallery(); });
         row.appendChild(t);
       });
     }
 
     function nextImg(){
-      const item = LIB[galleryState.key];
-      if (!item || !item.images.length) return;
-      galleryState.idx = (galleryState.idx + 1) % item.images.length;
+      const imgs = galleryState.images || [];
+      if (!imgs.length) return;
+      galleryState.idx = (galleryState.idx + 1) % imgs.length;
       renderGallery();
     }
     function prevImg(){
-      const item = LIB[galleryState.key];
-      if (!item || !item.images.length) return;
-      galleryState.idx = (galleryState.idx - 1 + item.images.length) % item.images.length;
+      const imgs = galleryState.images || [];
+      if (!imgs.length) return;
+      galleryState.idx = (galleryState.idx - 1 + imgs.length) % imgs.length;
       renderGallery();
+    }
+
+    // =============================
+    // 7) VÍNCULOS CONTEXTUALES A GALERÍA (CAMBIOS)
+    // =============================
+
+    // Cambio 1: ATS según voltaje
+    function atsSlugForVolt(){
+      if (state.volt === "110 V") return "ats-2p-110v";
+      if (state.volt === "220 V") return "ats-4p-110v-220v";
+      return "ats";
+    }
+
+    // Cambio 2: Mostrar ambos conectores (5-15P + TT-30P) tanto en 110V como en 220V
+    function openNemaBoth(){
+      const a = LIB["nema-5-15p"]?.images || [];
+      const b = LIB["nema-tt-30p"]?.images || [];
+      openGalleryCombined("Conectores NEMA (5-15P + TT-30P)", [...a, ...b]);
+    }
+
+    // Cambio 3: Equipo -> galería si existe
+    const EQUIPMENT_TO_SLUG = [
+      { slug:"ecoflow-delta3-ultra", keys:["delta 3 ultra","delta3 ultra","delta 3","delta3"] },
+      { slug:"ecoflow-delta2-pro",   keys:["delta 2 pro","delta2 pro"] },
+      { slug:"ecoflow-delta2-max",   keys:["delta 2 max","delta2 max"] },
+      { slug:"ecoflow-delta2",       keys:["delta 2","delta2"] },
+    ];
+
+    function matchEquipmentSlug(text){
+      const t = (text || "").toLowerCase();
+      if (!t) return "";
+      // Si no menciona EcoFlow pero coincide, igual abre
+      for (const rule of EQUIPMENT_TO_SLUG){
+        for (const k of rule.keys){
+          if (t.includes(k)) return rule.slug;
+        }
+      }
+      return "";
+    }
+
+    function updateEquipmentGalleryLink(){
+      const btn = $("btnEquipGallery");
+      if (!btn) return;
+
+      const eq = $("equipment")?.value || "";
+      const slug = matchEquipmentSlug(eq);
+
+      if (slug && LIB[slug] && (LIB[slug].images || []).length){
+        btn.style.display = "inline-flex";
+        btn.textContent = `Ver fotos: ${LIB[slug].title}`;
+        btn.onclick = ()=> openGallery(slug);
+      } else {
+        btn.style.display = "none";
+        btn.onclick = null;
+      }
+    }
+
+    // =============================
+    // 8) DIRECCIÓN: Sugerencias al escribir (Google Places) + UI custom
+    // =============================
+    function showAddrDropdown(items){
+      const box = $("addrDropdown");
+      if (!box) return;
+      box.innerHTML = "";
+
+      const clean = Array.isArray(items) ? items : [];
+      if (!clean.length){
+        box.style.display = "none";
+        return;
+      }
+
+      for (const it of clean.slice(0, 6)){
+        const div = document.createElement("div");
+        div.className = "addrItem";
+        div.setAttribute("role","option");
+        div.innerHTML = `${it.main || it.text || ""}${it.sub ? `<span class="addrSub">${it.sub}</span>` : ""}`;
+        div.addEventListener("click", ()=>{
+          $("address").value = it.text || it.main || "";
+          box.style.display = "none";
+          validateAddress();
+          refreshAll();
+        });
+        box.appendChild(div);
+      }
+
+      box.style.display = "block";
+    }
+
+    function hideAddrDropdown(){
+      const box = $("addrDropdown");
+      if (!box) return;
+      box.style.display = "none";
+    }
+
+    async function loadGoogleMapsScript(){
+      if (!GOOGLE_MAPS_API_KEY) return false;
+
+      // Evita cargar dos veces
+      if (window.google && window.google.maps && window.google.maps.places) return true;
+
+      return new Promise((resolve) => {
+        const s = document.createElement("script");
+        s.async = true;
+        s.defer = true;
+        s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GOOGLE_MAPS_API_KEY)}&libraries=places&language=es`;
+        s.onload = () => resolve(true);
+        s.onerror = () => resolve(false);
+        document.head.appendChild(s);
+      });
+    }
+
+    function initPlacesAutocomplete(){
+      const input = $("address");
+      if (!input || !(window.google && google.maps && google.maps.places)) return;
+
+      const service = new google.maps.places.AutocompleteService();
+
+      let lastReqId = 0;
+      input.addEventListener("input", ()=>{
+        const q = (input.value || "").trim();
+        if (q.length < 5){
+          hideAddrDropdown();
+          return;
+        }
+        const reqId = ++lastReqId;
+        service.getPlacePredictions(
+          {
+            input: q,
+            // Ajusta si quieres restringir; por ahora lo dejamos abierto.
+            // componentRestrictions: { country: ["us","cu"] }
+          },
+          (predictions, status) => {
+            if (reqId !== lastReqId) return;
+            if (status !== google.maps.places.PlacesServiceStatus.OK || !predictions){
+              hideAddrDropdown();
+              return;
+            }
+            const items = predictions.map(p => ({
+              text: p.description,
+              main: p.structured_formatting?.main_text || p.description,
+              sub: p.structured_formatting?.secondary_text || ""
+            }));
+            showAddrDropdown(items);
+          }
+        );
+      });
+
+      input.addEventListener("blur", ()=>{
+        // pequeño delay para permitir click en dropdown
+        setTimeout(()=> hideAddrDropdown(), 180);
+      });
     }
 
     // =============================
@@ -1364,7 +1639,7 @@
       // año
       $("year").textContent = new Date().getFullYear();
 
-      // WhatsApp TOP: siempre solo abrir chat (sin texto)
+      // WhatsApp TOP: abrir chat
       $("btnWhatsAppTop").href = "https://wa.me/" + PHONE_E164;
 
       // cargar CSV precios
@@ -1389,21 +1664,34 @@
       LIB = buildLibraryFromSources(libJson);
       renderLibraryGrid();
 
-      // Botones "Ver fotos"
+      // Botones "Ver fotos" (cambios de vínculo)
       document.querySelectorAll("[data-lib-open]").forEach(btn=>{
         btn.addEventListener("click", (ev)=>{
           ev.preventDefault();
           ev.stopPropagation();
           const key = btn.getAttribute("data-lib-open");
-          if (key === "voltaje") openGallery("voltaje");
-          else if (key === "nema") {
-            if (state.nema === "NEMA 5-15P") openGallery("nema515p");
-            else if (state.nema === "NEMA TT-30P") openGallery("nematt30p");
-            else openGallery("nema515p");
-          } else if (key === "ats") openGallery("ats");
-          else if (key === "protector") openGallery("protector");
-          else if (key === "monitor") openGallery("monitor");
-          else if (key === "nema520r") openGallery("nema520r");
+
+          if (key === "voltaje"){
+            // Cambio 1: 110V => ATS 2P, 220V => ATS 4P
+            openGallery(atsSlugForVolt());
+            return;
+          }
+
+          if (key === "ats"){
+            // Igual que arriba: ATS depende de voltaje
+            openGallery(atsSlugForVolt());
+            return;
+          }
+
+          if (key === "nema"){
+            // Cambio 2: siempre mostrar ambos conectores
+            openNemaBoth();
+            return;
+          }
+
+          if (key === "protector") openGallery("protector-voltaje");
+          else if (key === "monitor") openGallery("monitor-multifuncion");
+          else if (key === "nema520r") openGallery("nema-5-20r");
         });
       });
 
@@ -1417,6 +1705,19 @@
         if (e.key === "Escape") closeGallery();
         if (e.key === "ArrowRight") nextImg();
         if (e.key === "ArrowLeft") prevImg();
+      });
+
+      // Autocomplete dirección
+      try{
+        const ok = await loadGoogleMapsScript();
+        if (ok) initPlacesAutocomplete();
+      }catch(e){
+        // no-op
+      }
+
+      // ocultar dropdown al presionar Escape
+      document.addEventListener("keydown", (e)=>{
+        if (e.key === "Escape") hideAddrDropdown();
       });
 
       validatePersonalBlock();
